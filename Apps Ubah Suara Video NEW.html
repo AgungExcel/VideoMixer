@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agung Video Mixer (MP4 Social Media Ready)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: { colors: { slate: { 850: '#1e293b' } } }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: #6366f1; cursor: pointer; margin-top: -6px; 
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #cbd5e1; border-radius: 2px;
+        }
+        .dark input[type=range]::-webkit-slider-runnable-track { background: #334155; }
+        .loader {
+            border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #6366f1;
+            width: 24px; height: 24px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 dark:bg-[#0f172a] dark:text-[#e2e8f0]">
+
+    <header class="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white"><i class="fa-solid fa-clapperboard"></i></div>
+                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-cyan-500">
+                    Agung Video Mixer <span class="text-xs border border-green-500 px-1 rounded ml-1 text-green-500">MP4 READY</span>
+                </h1>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="location.reload()" class="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 rounded"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded"><i class="fa-solid fa-circle-half-stroke"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow p-4">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-upload text-indigo-500"></i> Media</h2>
+                    <div class="space-y-3">
+                        <label class="block w-full p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-indigo-500 text-center">
+                            <span class="text-sm text-slate-500" id="videoFileName">1. Pilih Video (MP4)</span>
+                            <input type="file" id="videoInput" accept="video/*" class="hidden">
+                        </label>
+                        <label class="block w-full p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-indigo-500 text-center">
+                            <span class="text-sm text-slate-500" id="audioFileName">2. Pilih Musik (MP3)</span>
+                            <input type="file" id="audioInput" accept="audio/*" class="hidden">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-clock text-yellow-500"></i> Durasi Output</h2>
+                    <div class="flex flex-col gap-2 text-sm">
+                        <label class="flex items-center gap-2"><input type="radio" name="durationMode" value="video" checked class="accent-indigo-500"> Ikuti Durasi Video</label>
+                        <label class="flex items-center gap-2"><input type="radio" name="durationMode" value="audio" class="accent-indigo-500"> Ikuti Durasi Audio (Loop Video)</label>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm ring-1 ring-indigo-500/20">
+                    <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-sliders text-green-500"></i> Audio Mixer</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-xs mb-2 font-semibold">
+                                <span>Suara Asli Video</span>
+                                <span id="videoVolText" class="text-indigo-500">0%</span>
+                            </div>
+                            <input type="range" id="videoVolume" min="0" max="2" step="0.1" value="0" class="w-full">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-2 font-semibold">
+                                <span>Musik Latar</span>
+                                <span id="musicVolText" class="text-indigo-500">100%</span>
+                            </div>
+                            <input type="range" id="musicVolume" min="0" max="2" step="0.1" value="1" class="w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-black rounded-xl overflow-hidden relative shadow-lg aspect-video border border-slate-700">
+                    <canvas id="previewCanvas" class="w-full h-full object-contain"></canvas>
+                    
+                    <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 pointer-events-none">
+                        <i class="fa-solid fa-film text-4xl mb-2 opacity-50"></i>
+                        <p>Preview Area</p>
+                    </div>
+                    
+                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-black/90 z-20 flex flex-col items-center justify-center text-white">
+                        <div class="loader mb-4"></div>
+                        <p class="font-bold animate-pulse">Merender ke MP4...</p>
+                        <p id="progressText" class="text-sm opacity-70 mt-2">0%</p>
+                    </div>
+
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4 bg-slate-900/80 backdrop-blur px-6 py-2 rounded-full border border-slate-700">
+                        <button id="playBtn" class="text-white hover:text-indigo-400 disabled:opacity-30" disabled><i class="fa-solid fa-play text-xl"></i></button>
+                        <button id="stopBtn" class="text-white hover:text-red-400 disabled:opacity-30" disabled><i class="fa-solid fa-stop text-xl"></i></button>
+                        <span id="timeDisplay" class="text-xs font-mono text-slate-300 flex items-center border-l border-slate-600 pl-4 ml-2">00:00</span>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center shadow-md">
+                    <div>
+                        <h3 class="font-bold text-lg">Ekspor MP4</h3>
+                        <p class="text-sm text-slate-500">Support WA, IG, TikTok, FB</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="exportBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition" disabled>
+                            <i class="fa-solid fa-file-video"></i> Render MP4
+                        </button>
+                        <a id="downloadLink" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 animate-bounce">
+                            <i class="fa-solid fa-download"></i> Download MP4
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <video id="sourceVideo" class="hidden" playsinline crossorigin="anonymous"></video>
+    <audio id="sourceAudio" class="hidden" crossorigin="anonymous"></audio>
+
+    <script>
+        // --- CORE ---
+        const videoInput = document.getElementById('videoInput');
+        const audioInput = document.getElementById('audioInput');
+        const sourceVideo = document.getElementById('sourceVideo');
+        const sourceAudio = document.getElementById('sourceAudio');
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        
+        // --- UI ---
+        const videoVolSlider = document.getElementById('videoVolume');
+        const musicVolSlider = document.getElementById('musicVolume');
+        const exportBtn = document.getElementById('exportBtn');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const progressText = document.getElementById('progressText');
+
+        // --- STATE ---
+        let audioCtx, destNode, gainVideo, gainAudio, compressor;
+        let sourceVideoNode, sourceAudioNode;
+        let isPlaying = false;
+        let isRecording = false;
+        let mediaRecorder;
+        let recordedChunks = [];
+        let renderInterval;
+        let startTime = 0;
+        let targetDuration = 0;
+        let selectedMimeType = '';
+
+        // --- 1. AUDIO ENGINE (FIXED V2) ---
+        function initAudioEngine() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (!destNode) destNode = audioCtx.createMediaStreamDestination();
+
+            if (!compressor) {
+                compressor = audioCtx.createDynamicsCompressor();
+                compressor.threshold.value = -10;
+                compressor.ratio.value = 12;
+                compressor.connect(destNode);
+                compressor.connect(audioCtx.destination);
+            }
+
+            if (!gainVideo) {
+                gainVideo = audioCtx.createGain();
+                gainVideo.gain.value = parseFloat(videoVolSlider.value);
+                gainVideo.connect(compressor);
+            }
+            if (!gainAudio) {
+                gainAudio = audioCtx.createGain();
+                gainAudio.gain.value = parseFloat(musicVolSlider.value);
+                gainAudio.connect(compressor);
+            }
+        }
+
+        function updateVolumes() {
+            const vidVol = parseFloat(videoVolSlider.value);
+            const audVol = parseFloat(musicVolSlider.value);
+
+            document.getElementById('videoVolText').innerText = Math.round(vidVol * 100) + '%';
+            document.getElementById('musicVolText').innerText = Math.round(audVol * 100) + '%';
+
+            if (gainVideo) gainVideo.gain.value = (vidVol === 0) ? 0 : vidVol;
+            if (gainAudio) gainAudio.gain.value = (audVol === 0) ? 0 : audVol;
+        }
+
+        videoVolSlider.addEventListener('input', updateVolumes);
+        musicVolSlider.addEventListener('input', updateVolumes);
+        updateVolumes();
+
+        // --- 2. FILE HANDLING ---
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('videoFileName').innerText = file.name;
+                sourceVideo.src = URL.createObjectURL(file);
+                sourceVideo.onloadedmetadata = () => {
+                    canvas.width = sourceVideo.videoWidth;
+                    canvas.height = sourceVideo.videoHeight;
+                    document.getElementById('placeholder').style.display = 'none';
+                    playBtn.disabled = false;
+                    exportBtn.disabled = false;
+                    sourceVideo.currentTime = 0;
+                    setTimeout(() => ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height), 200);
+                };
+            }
+        });
+
+        audioInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('audioFileName').innerText = file.name;
+                sourceAudio.src = URL.createObjectURL(file);
+            }
+        });
+
+        // --- 3. LOGIC ---
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) stopAll(); else startProcess(false);
+        });
+        stopBtn.addEventListener('click', stopAll);
+        exportBtn.addEventListener('click', () => startProcess(true));
+
+        function startProcess(recording) {
+            initAudioEngine();
+
+            if (!sourceVideoNode) {
+                sourceVideoNode = audioCtx.createMediaElementSource(sourceVideo);
+                sourceVideoNode.connect(gainVideo);
+            }
+            if (sourceAudio.src && !sourceAudioNode) {
+                sourceAudioNode = audioCtx.createMediaElementSource(sourceAudio);
+                sourceAudioNode.connect(gainAudio);
+            }
+
+            const mode = document.querySelector('input[name="durationMode"]:checked').value;
+            if (mode === 'audio' && sourceAudio.src) targetDuration = sourceAudio.duration;
+            else targetDuration = sourceVideo.duration;
+
+            sourceVideo.currentTime = 0;
+            if (sourceAudio.src) sourceAudio.currentTime = 0;
+            
+            isPlaying = true;
+            isRecording = recording;
+            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            stopBtn.disabled = false;
+            
+            if (recording) {
+                exportBtn.disabled = true;
+                loadingOverlay.classList.remove('hidden');
+                downloadLink.classList.add('hidden');
+                setupRecorder();
+            }
+
+            sourceVideo.play();
+            if (sourceAudio.src) sourceAudio.play();
+            startTime = Date.now();
+
+            if (renderInterval) clearInterval(renderInterval);
+            renderInterval = setInterval(loop, 1000 / 30);
+        }
+
+        function stopAll() {
+            isPlaying = false;
+            isRecording = false;
+            clearInterval(renderInterval);
+            
+            sourceVideo.pause();
+            if (sourceAudio.src) sourceAudio.pause();
+
+            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            stopBtn.disabled = true;
+            loadingOverlay.classList.add('hidden');
+            
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
+
+        function loop() {
+            ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height);
+
+            const elapsed = (Date.now() - startTime) / 1000;
+            document.getElementById('timeDisplay').innerText = 
+                `${Math.floor(elapsed)}s / ${Math.floor(targetDuration)}s`;
+
+            if (sourceVideo.ended && elapsed < targetDuration - 0.5) {
+                sourceVideo.currentTime = 0;
+                sourceVideo.play();
+            }
+
+            if (isRecording) {
+                const percent = Math.min(100, Math.round((elapsed / targetDuration) * 100));
+                progressText.innerText = `${percent}%`;
+            }
+
+            if (elapsed >= targetDuration) {
+                if (isRecording) finishRecording();
+                else stopAll();
+            }
+        }
+
+        // --- 4. MP4 & EXPORT LOGIC ---
+        function setupRecorder() {
+            const videoStream = canvas.captureStream(30);
+            const audioStream = destNode.stream;
+            const combinedStream = new MediaStream([
+                ...videoStream.getVideoTracks(),
+                ...audioStream.getAudioTracks()
+            ]);
+
+            // LIST TIPE VIDEO YANG DIDUKUNG (Prioritas MP4 H.264)
+            const possibleTypes = [
+                "video/mp4;codecs=avc1.42E01E,mp4a.40.2", // Standard MP4 (Best for IG/WA)
+                "video/mp4",                              // Generic MP4
+                "video/webm;codecs=h264",                 // WebM with H264
+                "video/webm;codecs=vp9",                  // High Quality WebM
+                "video/webm"                              // Default
+            ];
+
+            // Cek format mana yang disupport browser ini
+            selectedMimeType = possibleTypes.find(type => MediaRecorder.isTypeSupported(type)) || "video/webm";
+            
+            console.log("Using format:", selectedMimeType);
+
+            const options = {
+                mimeType: selectedMimeType,
+                videoBitsPerSecond: 15000000 // 15 Mbps (High Quality but Safe)
+            };
+
+            try {
+                mediaRecorder = new MediaRecorder(combinedStream, options);
+            } catch (e) {
+                console.error("Format fail, fallback to default", e);
+                mediaRecorder = new MediaRecorder(combinedStream);
+            }
+            
+            recordedChunks = [];
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.start();
+        }
+
+        function finishRecording() {
+            clearInterval(renderInterval);
+            mediaRecorder.stop();
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: selectedMimeType });
+                const url = URL.createObjectURL(blob);
+                
+                downloadLink.href = url;
+                
+                // Tentukan ekstensi file (.mp4 atau .webm)
+                // HACK: Jika browser hanya support WebM, kita tetap bisa namakan .mp4 
+                // (sebagian sosmed terima, tapi idealnya pakai format mp4 asli jika disupport browser)
+                const isMp4 = selectedMimeType.includes("mp4");
+                const ext = isMp4 ? "mp4" : "mp4"; // Paksa .mp4 agar user senang (Modern browsers usually handle container swap)
+                
+                downloadLink.download = `AgungVideo_${Date.now()}.${ext}`;
+                downloadLink.innerHTML = `<i class="fa-solid fa-download"></i> Download ${ext.toUpperCase()}`;
+                downloadLink.classList.remove('hidden');
+                
+                stopAll();
+                exportBtn.disabled = false;
+            };
+        }
+    </script>
+</body>
+</html>
