@@ -82,19 +82,19 @@
                 <!-- TABS NAVIGATION -->
                 <div class="flex bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mb-4 gap-1">
                     <button onclick="switchTab('media')" id="btn-media" class="flex-1 py-2.5 text-sm font-bold bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 rounded-lg transition-all shadow-sm">
-                        <i class="fa-solid fa-photo-film"></i> Media
+                        <i class="fa-solid fa-layer-group"></i> Gabung (Media)
                     </button>
                     <button onclick="switchTab('mixer')" id="btn-mixer" class="flex-1 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-700/50 rounded-lg transition-all">
-                        <i class="fa-solid fa-sliders"></i> Mixer
+                        <i class="fa-solid fa-music"></i> Audio (Mixer)
                     </button>
                 </div>
 
                 <div class="relative flex-grow">
-                    <!-- TAB 1: Panel Media Playlist -->
+                    <!-- TAB 1: Panel Media Playlist (Gabung Video) -->
                     <div id="tab-media" class="block animate-fade-in">
                         <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-[520px]">
                             <h2 class="font-bold mb-4 flex items-center justify-between gap-2 text-lg">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-photo-film text-indigo-500"></i> Playlist Video</span>
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> Gabung Video</span>
                                 <span class="text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 px-2 py-1 rounded-full" id="playlistCount">0 Video</span>
                             </h2>
                             
@@ -104,60 +104,94 @@
                                     <i class="fa-solid fa-film text-3xl mb-2"></i>
                                     <p>Belum ada video.<br>Klik tombol di bawah untuk menambah video.</p>
                                 </div>
-                                <!-- Item Video akan dirender di sini oleh JS -->
                             </div>
 
                             <div class="space-y-3 shrink-0">
                                 <button id="addVideoBtn" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors border border-slate-300 dark:border-slate-600">
                                     <i class="fa-solid fa-plus text-indigo-500"></i> Tambah Video (MP4)
                                 </button>
-                                <input type="file" id="videoInput" accept="video/*" multiple class="hidden">
+                                <input type="file" id="mediaVideoInput" accept="video/*" multiple class="hidden">
                                 
                                 <div class="h-px w-full bg-slate-200 dark:bg-slate-700 my-2"></div>
 
                                 <label class="block w-full p-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 text-center transition-colors bg-slate-50 dark:bg-slate-800/50">
                                     <i class="fa-solid fa-music text-lg text-slate-400 mb-1 block"></i>
-                                    <span class="text-sm text-slate-600 dark:text-slate-300 font-medium" id="audioFileName">Pilih Musik Latar (MP3)</span>
-                                    <input type="file" id="audioInput" accept="audio/*" class="hidden">
+                                    <span class="text-sm text-slate-600 dark:text-slate-300 font-medium" id="mediaAudioFileName">Pilih Musik Latar Opsional (MP3)</span>
+                                    <input type="file" id="mediaAudioInput" accept="audio/*" class="hidden">
                                 </label>
+
+                                <!-- Pilihan Durasi Output MEDIA -->
+                                <div class="bg-indigo-50 dark:bg-slate-800/80 p-3 rounded-lg border border-indigo-100 dark:border-slate-600 mt-2">
+                                    <h3 class="text-xs font-bold text-indigo-800 dark:text-indigo-300 uppercase mb-2 flex items-center gap-1"><i class="fa-solid fa-clock"></i> Target Durasi Media:</h3>
+                                    <div class="flex flex-col gap-2 text-sm">
+                                        <label class="flex items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="mediaDurationMode" value="video" checked class="accent-indigo-500 w-4 h-4"> 
+                                            <span class="font-medium text-slate-700 dark:text-slate-300">Ikuti Total Durasi Playlist</span>
+                                        </label>
+                                        <label class="flex items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="mediaDurationMode" value="audio" class="accent-indigo-500 w-4 h-4"> 
+                                            <span class="font-medium text-slate-700 dark:text-slate-300">Ikuti Audio (Loop Playlist)</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- TAB 2: Panel Mixer -->
+                    <!-- TAB 2: Panel Mixer (Ganti Audio 1 Video) -->
                     <div id="tab-mixer" class="hidden animate-fade-in">
-                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-[520px] overflow-y-auto custom-scroll">
-                            <div class="mb-6">
-                                <h2 class="font-bold mb-3 flex items-center gap-2 text-lg"><i class="fa-solid fa-clock text-yellow-500"></i> Durasi Output</h2>
-                                <div class="flex flex-col gap-2 text-sm">
-                                    <label class="flex items-center gap-3 p-2 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
-                                        <input type="radio" name="durationMode" value="video" checked class="accent-indigo-500 w-4 h-4"> 
-                                        <span class="font-medium">Ikuti Total Durasi Playlist Video</span>
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-[520px] flex flex-col">
+                            <h2 class="font-bold mb-4 flex items-center gap-2 text-lg"><i class="fa-solid fa-music text-indigo-500"></i> Ganti Audio (1 Video)</h2>
+                            
+                            <div class="space-y-4 flex-grow overflow-y-auto custom-scroll pr-1">
+                                <!-- Input Files -->
+                                <div class="space-y-3">
+                                    <label class="block w-full p-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 text-center transition-colors bg-slate-50 dark:bg-slate-800/50">
+                                        <i class="fa-solid fa-video text-lg text-slate-400 mb-1 block"></i>
+                                        <span class="text-sm text-slate-600 dark:text-slate-300 font-medium" id="mixerVideoName">1. Pilih 1 Video (MP4)</span>
+                                        <input type="file" id="mixerVideoInput" accept="video/*" class="hidden">
                                     </label>
-                                    <label class="flex items-center gap-3 p-2 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
-                                        <input type="radio" name="durationMode" value="audio" class="accent-indigo-500 w-4 h-4"> 
-                                        <span class="font-medium">Ikuti Durasi Audio (Loop Playlist)</span>
+                                    <label class="block w-full p-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 text-center transition-colors bg-slate-50 dark:bg-slate-800/50">
+                                        <i class="fa-solid fa-file-audio text-lg text-slate-400 mb-1 block"></i>
+                                        <span class="text-sm text-slate-600 dark:text-slate-300 font-medium" id="mixerAudioName">2. Pilih Audio Baru (MP3)</span>
+                                        <input type="file" id="mixerAudioInput" accept="audio/*" class="hidden">
                                     </label>
                                 </div>
-                            </div>
 
-                            <div class="h-px w-full bg-slate-200 dark:bg-slate-700 mb-6"></div>
+                                <div class="h-px w-full bg-slate-200 dark:bg-slate-700 my-4"></div>
 
-                            <h2 class="font-bold mb-4 flex items-center gap-2 text-lg"><i class="fa-solid fa-sliders text-green-500"></i> Audio Mixer</h2>
-                            <div class="space-y-4">
+                                <!-- Mixer Sliders -->
+                                <h3 class="font-bold text-sm text-slate-700 dark:text-slate-300 flex items-center gap-2"><i class="fa-solid fa-sliders text-green-500"></i> Volume Mixer</h3>
                                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700">
                                     <div class="flex justify-between text-sm mb-3 font-semibold">
-                                        <span class="flex items-center gap-2"><i class="fa-solid fa-video text-slate-400"></i> Suara Asli Video</span>
+                                        <span class="flex items-center gap-2"><i class="fa-solid fa-volume-low text-slate-400"></i> Suara Asli Video</span>
                                         <span id="videoVolText" class="text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded">0%</span>
                                     </div>
                                     <input type="range" id="videoVolume" min="0" max="2" step="0.1" value="0" class="w-full">
                                 </div>
                                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700">
                                     <div class="flex justify-between text-sm mb-3 font-semibold">
-                                        <span class="flex items-center gap-2"><i class="fa-solid fa-music text-slate-400"></i> Musik Latar</span>
+                                        <span class="flex items-center gap-2"><i class="fa-solid fa-music text-slate-400"></i> Audio Baru</span>
                                         <span id="musicVolText" class="text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded">100%</span>
                                     </div>
                                     <input type="range" id="musicVolume" min="0" max="2" step="0.1" value="1" class="w-full">
+                                </div>
+
+                                <div class="h-px w-full bg-slate-200 dark:bg-slate-700 my-4"></div>
+
+                                <!-- Target Durasi Mixer -->
+                                <div class="bg-indigo-50 dark:bg-slate-800/80 p-3 rounded-lg border border-indigo-100 dark:border-slate-600 mt-2">
+                                    <h3 class="text-xs font-bold text-indigo-800 dark:text-indigo-300 uppercase mb-2 flex items-center gap-1"><i class="fa-solid fa-clock"></i> Target Durasi Mixer:</h3>
+                                    <div class="flex flex-col gap-2 text-sm">
+                                        <label class="flex items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="mixerDurationMode" value="video" checked class="accent-indigo-500 w-4 h-4"> 
+                                            <span class="font-medium text-slate-700 dark:text-slate-300">Ikuti Durasi Video</span>
+                                        </label>
+                                        <label class="flex items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="mixerDurationMode" value="audio" class="accent-indigo-500 w-4 h-4"> 
+                                            <span class="font-medium text-slate-700 dark:text-slate-300">Ikuti Durasi Audio (Loop Video)</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -215,32 +249,45 @@
         </div>
     </main>
 
-    <audio id="sourceAudio" class="hidden" crossorigin="anonymous"></audio>
+    <audio id="mediaAudio" class="hidden" crossorigin="anonymous"></audio>
+    <video id="mixerVideo" class="hidden" playsinline crossorigin="anonymous"></video>
+    <audio id="mixerAudio" class="hidden" crossorigin="anonymous"></audio>
 
     <script>
         // --- CORE & STATE ---
-        const playlist = []; // Array of video objects: {id, file, url, element, startTrim, endTrim, duration, audioNode}
-        let currentPlaylistIndex = 0;
+        let currentMode = 'media'; // 'media' atau 'mixer'
         
-        const audioInput = document.getElementById('audioInput');
-        const videoInput = document.getElementById('videoInput');
-        const sourceAudio = document.getElementById('sourceAudio');
+        // Media Tab State
+        const playlist = []; 
+        let currentPlaylistIndex = 0;
+        const mediaAudioEl = document.getElementById('mediaAudio');
+        
+        // Mixer Tab State
+        const mixerVideoEl = document.getElementById('mixerVideo');
+        const mixerAudioEl = document.getElementById('mixerAudio');
+
         const canvas = document.getElementById('previewCanvas');
         const ctx = canvas.getContext('2d', { alpha: false });
         
-        // --- UI ---
+        // --- UI Elements ---
+        const mediaVideoInput = document.getElementById('mediaVideoInput');
+        const mediaAudioInput = document.getElementById('mediaAudioInput');
+        const playlistContainer = document.getElementById('playlistContainer');
+
+        const mixerVideoInput = document.getElementById('mixerVideoInput');
+        const mixerAudioInput = document.getElementById('mixerAudioInput');
         const videoVolSlider = document.getElementById('videoVolume');
         const musicVolSlider = document.getElementById('musicVolume');
+
         const exportBtn = document.getElementById('exportBtn');
         const playBtn = document.getElementById('playBtn');
         const stopBtn = document.getElementById('stopBtn');
         const downloadLink = document.getElementById('downloadLink');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const progressText = document.getElementById('progressText');
-        const playlistContainer = document.getElementById('playlistContainer');
 
         let audioCtx, destNode, gainVideo, gainAudio, compressor;
-        let sourceAudioNode;
+        let mediaAudioNode, mixerVideoNode, mixerAudioNode;
         let isPlaying = false;
         let isRecording = false;
         let mediaRecorder;
@@ -250,31 +297,47 @@
         let targetDuration = 0;
         let selectedMimeType = '';
 
-        // --- LOGO IMAGE ---
-        const logoImg = new Image();
-        logoImg.src = 'AgungProAudio_Logo.png'; 
-
         // --- TAB NAVIGATION SYSTEM ---
         window.switchTab = function(tabId) {
-            // Sembunyikan semua tab
+            currentMode = tabId;
+            stopAll(); 
+            
+            // Bersihkan Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('placeholder').style.display = 'flex';
+            setTimeout(() => document.getElementById('placeholder').style.opacity = '1', 10);
+
             ['media', 'mixer'].forEach(id => {
                 document.getElementById('tab-' + id).classList.add('hidden');
                 document.getElementById('tab-' + id).classList.remove('block');
                 
-                // Reset styling tombol
                 const btn = document.getElementById('btn-' + id);
                 btn.classList.remove('bg-indigo-50', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-indigo-400', 'shadow-sm');
                 btn.classList.add('text-slate-500', 'hover:text-slate-700', 'hover:bg-slate-50', 'dark:text-slate-400', 'dark:hover:text-slate-200', 'dark:hover:bg-slate-700/50');
             });
 
-            // Tampilkan tab yang dipilih
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             document.getElementById('tab-' + tabId).classList.add('block');
             
-            // Highlight tombol aktif
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700', 'hover:bg-slate-50', 'dark:text-slate-400', 'dark:hover:text-slate-200', 'dark:hover:bg-slate-700/50');
             activeBtn.classList.add('bg-indigo-50', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-indigo-400', 'shadow-sm');
+
+            // Restore preview jika ada media di tab aktif
+            if (currentMode === 'media' && playlist.length > 0) {
+                document.getElementById('placeholder').style.display = 'none';
+                drawFrame(playlist[0].element);
+                playBtn.disabled = false;
+                exportBtn.disabled = false;
+            } else if (currentMode === 'mixer' && mixerVideoEl.src) {
+                document.getElementById('placeholder').style.display = 'none';
+                drawFrame(mixerVideoEl);
+                playBtn.disabled = false;
+                exportBtn.disabled = false;
+            } else {
+                playBtn.disabled = true;
+                exportBtn.disabled = true;
+            }
         };
 
         function formatTime(seconds) {
@@ -283,17 +346,14 @@
             return `${m}:${s}`;
         }
 
-        // --- 1. PLAYLIST MANAGEMENT ---
-        document.getElementById('addVideoBtn').addEventListener('click', () => videoInput.click());
+        // --- 1. MEDIA TAB LOGIC (Playlist Gabung Video) ---
+        document.getElementById('addVideoBtn').addEventListener('click', () => mediaVideoInput.click());
 
-        videoInput.addEventListener('change', async (e) => {
+        mediaVideoInput.addEventListener('change', async (e) => {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
-
-            for (let file of files) {
-                await addVideoToPlaylist(file);
-            }
-            videoInput.value = ''; // Reset input
+            for (let file of files) await addVideoToPlaylist(file);
+            mediaVideoInput.value = ''; 
         });
 
         async function addVideoToPlaylist(file) {
@@ -304,34 +364,20 @@
             videoEl.crossOrigin = "anonymous";
             videoEl.playsInline = true;
             
-            await new Promise((resolve) => {
-                videoEl.onloadedmetadata = () => resolve();
+            await new Promise((resolve) => { videoEl.onloadedmetadata = () => resolve(); });
+
+            playlist.push({
+                id: id, name: file.name, url: url, element: videoEl,
+                startTrim: 0, endTrim: videoEl.duration, duration: videoEl.duration, audioNode: null
             });
 
-            const duration = videoEl.duration;
-            const vidObj = {
-                id: id,
-                name: file.name,
-                file: file,
-                url: url,
-                element: videoEl,
-                startTrim: 0,
-                endTrim: duration,
-                duration: duration,
-                audioNode: null
-            };
-
-            playlist.push(vidObj);
             renderPlaylistUI();
             
-            // Setup canvas size from first video
-            if (playlist.length === 1) {
-                canvas.width = videoEl.videoWidth;
-                canvas.height = videoEl.videoHeight;
+            if (playlist.length === 1 && currentMode === 'media') {
+                canvas.width = videoEl.videoWidth; canvas.height = videoEl.videoHeight;
                 document.getElementById('placeholder').style.opacity = '0';
                 setTimeout(() => document.getElementById('placeholder').style.display = 'none', 300);
-                playBtn.disabled = false;
-                exportBtn.disabled = false;
+                playBtn.disabled = false; exportBtn.disabled = false;
                 videoEl.currentTime = 0;
                 setTimeout(() => drawFrame(videoEl), 200); 
             }
@@ -345,14 +391,12 @@
                 emptyMsg.style.display = 'flex';
                 playlistContainer.innerHTML = '';
                 playlistContainer.appendChild(emptyMsg);
-                playBtn.disabled = true;
-                exportBtn.disabled = true;
+                if(currentMode === 'media') { playBtn.disabled = true; exportBtn.disabled = true; }
                 return;
             } else {
                 emptyMsg.style.display = 'none';
             }
 
-            // Keep empty msg in DOM but hidden
             let html = '';
             playlist.forEach((vid, index) => {
                 html += `
@@ -381,15 +425,11 @@
                                 class="w-full bg-slate-100 dark:bg-slate-700 text-sm p-1 rounded border border-transparent focus:border-indigo-500 outline-none text-center font-mono">
                         </div>
                     </div>
-                    <div class="text-right text-[10px] text-slate-500 mt-1 font-mono">
-                        Durasi asli: ${vid.duration.toFixed(1)}s
-                    </div>
                 </div>
                 `;
             });
-            
             playlistContainer.innerHTML = html;
-            playlistContainer.appendChild(emptyMsg); // re-append hidden msg
+            playlistContainer.appendChild(emptyMsg);
         }
 
         window.updateTrim = function(id, type, val) {
@@ -412,12 +452,10 @@
         window.removeVideo = function(id) {
             const index = playlist.findIndex(v => v.id === id);
             if (index > -1) {
-                // Hapus URL objek untuk membebaskan memori
                 URL.revokeObjectURL(playlist[index].url);
                 playlist.splice(index, 1);
                 renderPlaylistUI();
-                
-                if (playlist.length === 0) {
+                if (playlist.length === 0 && currentMode === 'media') {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     document.getElementById('placeholder').style.display = 'flex';
                     setTimeout(() => document.getElementById('placeholder').style.opacity = '1', 10);
@@ -425,279 +463,237 @@
             }
         };
 
-        // --- 2. AUDIO INPUT ---
-        audioInput.addEventListener('change', (e) => {
+        mediaAudioInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                document.getElementById('audioFileName').innerHTML = `<span class="text-indigo-500 font-bold"><i class="fa-solid fa-check-circle"></i> ${file.name}</span>`;
-                sourceAudio.src = URL.createObjectURL(file);
+                document.getElementById('mediaAudioFileName').innerHTML = `<span class="text-indigo-500 font-bold"><i class="fa-solid fa-check-circle"></i> ${file.name}</span>`;
+                mediaAudioEl.src = URL.createObjectURL(file);
             }
         });
 
-        // --- 3. AUDIO ENGINE ---
-        function initAudioEngine() {
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
+        // --- 2. MIXER TAB LOGIC (Single Video Replace Audio) ---
+        mixerVideoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('mixerVideoName').innerHTML = `<span class="text-indigo-500 font-bold"><i class="fa-solid fa-check-circle"></i> ${file.name}</span>`;
+                mixerVideoEl.src = URL.createObjectURL(file);
+                mixerVideoEl.onloadedmetadata = () => {
+                    if (currentMode === 'mixer') {
+                        canvas.width = mixerVideoEl.videoWidth; canvas.height = mixerVideoEl.videoHeight;
+                        document.getElementById('placeholder').style.display = 'none';
+                        playBtn.disabled = false; exportBtn.disabled = false;
+                        mixerVideoEl.currentTime = 0;
+                        setTimeout(() => drawFrame(mixerVideoEl), 200);
+                    }
+                };
             }
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+        });
 
-            if (!destNode) destNode = audioCtx.createMediaStreamDestination();
-
-            if (!compressor) {
-                compressor = audioCtx.createDynamicsCompressor();
-                compressor.threshold.value = -10;
-                compressor.ratio.value = 12;
-                compressor.connect(destNode);
-                compressor.connect(audioCtx.destination);
+        mixerAudioInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('mixerAudioName').innerHTML = `<span class="text-indigo-500 font-bold"><i class="fa-solid fa-check-circle"></i> ${file.name}</span>`;
+                mixerAudioEl.src = URL.createObjectURL(file);
             }
-
-            if (!gainVideo) {
-                gainVideo = audioCtx.createGain();
-                gainVideo.gain.value = parseFloat(videoVolSlider.value);
-                gainVideo.connect(compressor);
-            }
-            if (!gainAudio) {
-                gainAudio = audioCtx.createGain();
-                gainAudio.gain.value = parseFloat(musicVolSlider.value);
-                gainAudio.connect(compressor);
-            }
-
-            // Hubungkan semua video di playlist ke gainVideo
-            playlist.forEach(vid => {
-                if (!vid.audioNode) {
-                    vid.audioNode = audioCtx.createMediaElementSource(vid.element);
-                    vid.audioNode.connect(gainVideo);
-                }
-            });
-
-            // Hubungkan audio latar
-            if (sourceAudio.src && !sourceAudioNode) {
-                sourceAudioNode = audioCtx.createMediaElementSource(sourceAudio);
-                sourceAudioNode.connect(gainAudio);
-            }
-        }
+        });
 
         function updateVolumes() {
             const vidVol = parseFloat(videoVolSlider.value);
             const audVol = parseFloat(musicVolSlider.value);
-
             document.getElementById('videoVolText').innerText = Math.round(vidVol * 100) + '%';
             document.getElementById('musicVolText').innerText = Math.round(audVol * 100) + '%';
-
-            if (gainVideo) gainVideo.gain.value = (vidVol === 0) ? 0 : vidVol;
-            if (gainAudio) gainAudio.gain.value = (audVol === 0) ? 0 : audVol;
+            if (currentMode === 'mixer' && gainVideo && gainAudio) {
+                gainVideo.gain.value = vidVol;
+                gainAudio.gain.value = audVol;
+            }
         }
-
         videoVolSlider.addEventListener('input', updateVolumes);
         musicVolSlider.addEventListener('input', updateVolumes);
-        updateVolumes();
+
+        // --- 3. AUDIO ENGINE ---
+        function initAudioEngine() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (!destNode) destNode = audioCtx.createMediaStreamDestination();
+
+            if (!compressor) {
+                compressor = audioCtx.createDynamicsCompressor();
+                compressor.threshold.value = -10; compressor.ratio.value = 12;
+                compressor.connect(destNode); compressor.connect(audioCtx.destination);
+            }
+
+            if (!gainVideo) { gainVideo = audioCtx.createGain(); gainVideo.connect(compressor); }
+            if (!gainAudio) { gainAudio = audioCtx.createGain(); gainAudio.connect(compressor); }
+
+            if (currentMode === 'media') {
+                gainVideo.gain.value = 1.0; // Fixed 100% untuk Media Tab
+                gainAudio.gain.value = 1.0; 
+
+                playlist.forEach(vid => {
+                    if (!vid.audioNode) {
+                        vid.audioNode = audioCtx.createMediaElementSource(vid.element);
+                        vid.audioNode.connect(gainVideo);
+                    }
+                });
+                if (mediaAudioEl.src && !mediaAudioNode) {
+                    mediaAudioNode = audioCtx.createMediaElementSource(mediaAudioEl);
+                    mediaAudioNode.connect(gainAudio);
+                }
+            } else {
+                gainVideo.gain.value = parseFloat(videoVolSlider.value); // Slider khusus Mixer Tab
+                gainAudio.gain.value = parseFloat(musicVolSlider.value);
+
+                if (mixerVideoEl.src && !mixerVideoNode) {
+                    mixerVideoNode = audioCtx.createMediaElementSource(mixerVideoEl);
+                    mixerVideoNode.connect(gainVideo);
+                }
+                if (mixerAudioEl.src && !mixerAudioNode) {
+                    mixerAudioNode = audioCtx.createMediaElementSource(mixerAudioEl);
+                    mixerAudioNode.connect(gainAudio);
+                }
+            }
+        }
 
         // --- 4. RENDERER & LOGIC ---
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) stopAll(); else startProcess(false);
-        });
+        playBtn.addEventListener('click', () => { if (isPlaying) stopAll(); else startProcess(false); });
         stopBtn.addEventListener('click', stopAll);
         exportBtn.addEventListener('click', () => startProcess(true));
 
         function calculateTargetDuration() {
-            const mode = document.querySelector('input[name="durationMode"]:checked').value;
-            if (mode === 'audio' && sourceAudio.src) {
-                return sourceAudio.duration;
-            } else {
+            if (currentMode === 'media') {
+                const mode = document.querySelector('input[name="mediaDurationMode"]:checked').value;
+                if (mode === 'audio' && mediaAudioEl.src) return mediaAudioEl.duration;
                 return playlist.reduce((sum, vid) => sum + (vid.endTrim - vid.startTrim), 0);
+            } else {
+                const mode = document.querySelector('input[name="mixerDurationMode"]:checked').value;
+                if (mode === 'audio' && mixerAudioEl.src) return mixerAudioEl.duration;
+                return mixerVideoEl.duration;
             }
         }
 
         function drawFrame(videoEl) {
-            if (!videoEl || playlist.length === 0) return;
-            
-            // Gambar Background Hitam
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Gambar Video secara proporsional di tengah canvas (Mencegah distorsi beda resolusi)
+            if (!videoEl) return;
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             const canvasAspect = canvas.width / canvas.height;
             const videoAspect = videoEl.videoWidth / videoEl.videoHeight;
             let drawWidth, drawHeight, startX, startY;
 
             if (videoAspect > canvasAspect) {
-                drawWidth = canvas.width;
-                drawHeight = canvas.width / videoAspect;
-                startX = 0;
-                startY = (canvas.height - drawHeight) / 2;
+                drawWidth = canvas.width; drawHeight = canvas.width / videoAspect;
+                startX = 0; startY = (canvas.height - drawHeight) / 2;
             } else {
-                drawHeight = canvas.height;
-                drawWidth = canvas.height * videoAspect;
-                startX = (canvas.width - drawWidth) / 2;
-                startY = 0;
+                drawHeight = canvas.height; drawWidth = canvas.height * videoAspect;
+                startX = (canvas.width - drawWidth) / 2; startY = 0;
             }
-            
             ctx.drawImage(videoEl, startX, startY, drawWidth, drawHeight);
         }
 
         function startProcess(recording) {
-            if (playlist.length === 0) return;
-            initAudioEngine();
+            if (currentMode === 'media' && playlist.length === 0) return;
+            if (currentMode === 'mixer' && !mixerVideoEl.src) return;
 
+            initAudioEngine();
             targetDuration = calculateTargetDuration();
             
-            // Reset Semua State Video
-            playlist.forEach(vid => {
-                vid.element.pause();
-                vid.element.currentTime = vid.startTrim;
-            });
-            if (sourceAudio.src) sourceAudio.currentTime = 0;
+            if (currentMode === 'media') {
+                playlist.forEach(vid => { vid.element.pause(); vid.element.currentTime = vid.startTrim; });
+                if (mediaAudioEl.src) mediaAudioEl.currentTime = 0;
+                currentPlaylistIndex = 0;
+                playlist[0].element.play().catch(e => console.error(e));
+                if (mediaAudioEl.src) mediaAudioEl.play();
+            } else {
+                mixerVideoEl.currentTime = 0;
+                if (mixerAudioEl.src) mixerAudioEl.currentTime = 0;
+                mixerVideoEl.play().catch(e => console.error(e));
+                if (mixerAudioEl.src) mixerAudioEl.play();
+            }
             
-            currentPlaylistIndex = 0;
-            isPlaying = true;
-            isRecording = recording;
-            
+            isPlaying = true; isRecording = recording;
             playBtn.innerHTML = '<i class="fa-solid fa-pause text-2xl"></i>';
             stopBtn.disabled = false;
             
             if (recording) {
-                exportBtn.disabled = true;
-                loadingOverlay.classList.remove('hidden');
-                downloadLink.classList.add('hidden');
-                setupRecorder();
+                exportBtn.disabled = true; loadingOverlay.classList.remove('hidden');
+                downloadLink.classList.add('hidden'); setupRecorder();
             }
-
-            // Play Video Pertama & Audio Latar
-            playlist[0].element.play().catch(e => console.error("Autoplay prevent:", e));
-            if (sourceAudio.src) sourceAudio.play();
-            
             startTimeGlobal = Date.now();
-
             if (renderInterval) clearInterval(renderInterval);
-            renderInterval = setInterval(loop, 1000 / 30); // 30 FPS Loop
+            renderInterval = setInterval(loop, 1000 / 30);
         }
 
         function stopAll() {
-            isPlaying = false;
-            isRecording = false;
-            clearInterval(renderInterval);
+            isPlaying = false; isRecording = false; clearInterval(renderInterval);
             
             playlist.forEach(vid => vid.element.pause());
-            if (sourceAudio.src) sourceAudio.pause();
+            mediaAudioEl.pause();
+            mixerVideoEl.pause();
+            mixerAudioEl.pause();
 
             playBtn.innerHTML = '<i class="fa-solid fa-play text-2xl"></i>';
-            stopBtn.disabled = true;
-            loadingOverlay.classList.add('hidden');
-            
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
+            stopBtn.disabled = true; loadingOverlay.classList.add('hidden');
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
         }
 
         function loop() {
-            if (playlist.length === 0 || currentPlaylistIndex >= playlist.length) return;
-
-            let activeVidObj = playlist[currentPlaylistIndex];
-            let activeVid = activeVidObj.element;
-
-            drawFrame(activeVid);
-
             const elapsedGlobal = (Date.now() - startTimeGlobal) / 1000;
-            
-            document.getElementById('timeDisplay').innerText = 
-                `${formatTime(elapsedGlobal)} / ${formatTime(targetDuration)}`;
+            document.getElementById('timeDisplay').innerText = `${formatTime(elapsedGlobal)} / ${formatTime(targetDuration)}`;
 
-            // --- TRANSISI PLAYLIST LOGIC ---
-            // Cek apakah video saat ini sudah mencapai batas "endTrim" nya
-            if (activeVid.currentTime >= activeVidObj.endTrim || activeVid.ended) {
-                activeVid.pause(); // Hentikan video saat ini
-                currentPlaylistIndex++; // Lanjut ke video berikutnya
-                
-                if (currentPlaylistIndex < playlist.length) {
-                    // Play video berikutnya
-                    let nextVidObj = playlist[currentPlaylistIndex];
-                    nextVidObj.element.currentTime = nextVidObj.startTrim;
-                    nextVidObj.element.play().catch(e => console.error("Play error:", e));
-                } else {
-                    // Playlist Habis. Cek durasi mode.
-                    const mode = document.querySelector('input[name="durationMode"]:checked').value;
-                    if (mode === 'audio' && elapsedGlobal < targetDuration - 0.5) {
-                        // Jika mode audio, loop seluruh playlist dari awal
-                        currentPlaylistIndex = 0;
-                        playlist.forEach(vid => vid.element.pause());
-                        let firstVid = playlist[0];
-                        firstVid.element.currentTime = firstVid.startTrim;
-                        firstVid.element.play();
+            if (currentMode === 'media') {
+                if (playlist.length === 0 || currentPlaylistIndex >= playlist.length) return;
+                let activeVidObj = playlist[currentPlaylistIndex];
+                let activeVid = activeVidObj.element;
+                drawFrame(activeVid);
+
+                if (activeVid.currentTime >= activeVidObj.endTrim || activeVid.ended) {
+                    activeVid.pause(); currentPlaylistIndex++; 
+                    if (currentPlaylistIndex < playlist.length) {
+                        let nextVidObj = playlist[currentPlaylistIndex];
+                        nextVidObj.element.currentTime = nextVidObj.startTrim;
+                        nextVidObj.element.play();
+                    } else {
+                        const mode = document.querySelector('input[name="mediaDurationMode"]:checked').value;
+                        if (mode === 'audio' && elapsedGlobal < targetDuration - 0.5) {
+                            currentPlaylistIndex = 0; playlist.forEach(v => v.element.pause());
+                            let firstVid = playlist[0]; firstVid.element.currentTime = firstVid.startTrim;
+                            firstVid.element.play();
+                        }
                     }
+                }
+            } else {
+                drawFrame(mixerVideoEl);
+                if (mixerVideoEl.ended && elapsedGlobal < targetDuration - 0.5) {
+                    mixerVideoEl.currentTime = 0; mixerVideoEl.play();
                 }
             }
 
-            // Update Progress UI jika merekam
-            if (isRecording) {
-                const percent = Math.min(100, Math.round((elapsedGlobal / targetDuration) * 100));
-                progressText.innerText = `${percent}%`;
-            }
-
-            // Selesai jika total waktu telah terlampaui
-            if (elapsedGlobal >= targetDuration) {
-                if (isRecording) finishRecording();
-                else stopAll();
-            }
+            if (isRecording) progressText.innerText = `${Math.min(100, Math.round((elapsedGlobal / targetDuration) * 100))}%`;
+            if (elapsedGlobal >= targetDuration) { if (isRecording) finishRecording(); else stopAll(); }
         }
 
         // --- 5. MP4 & EXPORT LOGIC ---
         function setupRecorder() {
             const videoStream = canvas.captureStream(30);
-            const audioStream = destNode.stream;
-            const combinedStream = new MediaStream([
-                ...videoStream.getVideoTracks(),
-                ...audioStream.getAudioTracks()
-            ]);
-
-            const possibleTypes = [
-                "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
-                "video/mp4",
-                "video/webm;codecs=h264",
-                "video/webm;codecs=vp9",
-                "video/webm"
-            ];
-
-            selectedMimeType = possibleTypes.find(type => MediaRecorder.isTypeSupported(type)) || "video/webm";
+            const combinedStream = new MediaStream([...videoStream.getVideoTracks(), ...destNode.stream.getAudioTracks()]);
+            const types = ["video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/mp4", "video/webm;codecs=h264", "video/webm"];
+            selectedMimeType = types.find(t => MediaRecorder.isTypeSupported(t)) || "video/webm";
             
-            const options = {
-                mimeType: selectedMimeType,
-                videoBitsPerSecond: 15000000 // 15 Mbps
-            };
-
-            try {
-                mediaRecorder = new MediaRecorder(combinedStream, options);
-            } catch (e) {
-                console.error("Format fail, fallback to default", e);
-                mediaRecorder = new MediaRecorder(combinedStream);
-            }
+            try { mediaRecorder = new MediaRecorder(combinedStream, { mimeType: selectedMimeType, videoBitsPerSecond: 15000000 }); } 
+            catch (e) { mediaRecorder = new MediaRecorder(combinedStream); }
             
             recordedChunks = [];
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) recordedChunks.push(e.data);
-            };
-
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.start();
         }
 
         function finishRecording() {
-            clearInterval(renderInterval);
-            mediaRecorder.stop();
+            clearInterval(renderInterval); mediaRecorder.stop();
             mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: selectedMimeType });
-                const url = URL.createObjectURL(blob);
-                
+                const url = URL.createObjectURL(new Blob(recordedChunks, { type: selectedMimeType }));
                 downloadLink.href = url;
-                
-                const isMp4 = selectedMimeType.includes("mp4");
-                const ext = isMp4 ? "mp4" : "mp4"; // Defaulting to .mp4 extension
-                
-                downloadLink.download = `AgungProAudio_PlaylistMix_${Date.now()}.${ext}`;
-                downloadLink.innerHTML = `<i class="fa-solid fa-download text-lg"></i> Simpan Video Gabungan`;
+                downloadLink.download = `AgungVideo_${currentMode}_${Date.now()}.mp4`;
+                downloadLink.innerHTML = `<i class="fa-solid fa-download text-lg"></i> Simpan Video`;
                 downloadLink.classList.remove('hidden');
-                
-                stopAll();
-                exportBtn.disabled = false;
+                stopAll(); exportBtn.disabled = false;
             };
         }
     </script>
