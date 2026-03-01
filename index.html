@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agung Video Mixer (MP4 Social Media Ready)</title>
+    
+    <!-- Favicon untuk Tab Browser -->
+    <link rel="icon" type="image/png" href="AgungProAudio_Logo.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,7 +19,7 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
@@ -32,105 +36,178 @@
             width: 24px; height: 24px; animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Custom Scrollbar for playlist */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+        
+        /* Tab Animation */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 dark:bg-[#0f172a] dark:text-[#e2e8f0]">
 
-    <header class="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 py-4 px-6 sticky top-0 z-50">
+    <header class="bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 py-4 px-6 sticky top-0 z-50 shadow-sm">
         <div class="max-w-6xl mx-auto flex justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-indigo-600 p-2 rounded-lg text-white"><i class="fa-solid fa-clapperboard"></i></div>
-                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-cyan-500">
-                    Agung Video Mixer <span class="text-xs border border-green-500 px-1 rounded ml-1 text-green-500">MP4 READY</span>
-                </h1>
+            <div class="flex items-center gap-4">
+                <!-- Logo Aplikasi -->
+                <div class="relative">
+                    <img src="AgungProAudio_Logo.png" alt="Agung Pro Audio" class="h-12 w-12 rounded-full shadow-md border-2 border-indigo-500 object-cover bg-slate-800">
+                    <div class="absolute -bottom-1 -right-1 bg-green-500 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-900"></div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-cyan-400 leading-tight">
+                        Agung Video Mixer
+                    </h1>
+                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <i class="fa-solid fa-bolt text-yellow-500"></i> MULTI-VIDEO & MP4 READY
+                    </p>
+                </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="location.reload()" class="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 rounded"><i class="fa-solid fa-rotate-right"></i> Reset</button>
-                <button onclick="document.documentElement.classList.toggle('dark')" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                <button onclick="location.reload()" class="px-3 py-2 text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-2 font-medium"><i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Reset</span></button>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors"><i class="fa-solid fa-circle-half-stroke"></i></button>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow p-4">
+    <main class="flex-grow p-4 md:p-6">
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-upload text-indigo-500"></i> Media</h2>
-                    <div class="space-y-3">
-                        <label class="block w-full p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-indigo-500 text-center">
-                            <span class="text-sm text-slate-500" id="videoFileName">1. Pilih Video (MP4)</span>
-                            <input type="file" id="videoInput" accept="video/*" class="hidden">
-                        </label>
-                        <label class="block w-full p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-indigo-500 text-center">
-                            <span class="text-sm text-slate-500" id="audioFileName">2. Pilih Musik (MP3)</span>
-                            <input type="file" id="audioInput" accept="audio/*" class="hidden">
-                        </label>
-                    </div>
+            <!-- KOLOM KIRI: MENU TAB -->
+            <div class="lg:col-span-1 flex flex-col">
+                <!-- TABS NAVIGATION -->
+                <div class="flex bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm mb-4 gap-1">
+                    <button onclick="switchTab('media')" id="btn-media" class="flex-1 py-2.5 text-sm font-bold bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 rounded-lg transition-all shadow-sm">
+                        <i class="fa-solid fa-photo-film"></i> Media
+                    </button>
+                    <button onclick="switchTab('mixer')" id="btn-mixer" class="flex-1 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-700/50 rounded-lg transition-all">
+                        <i class="fa-solid fa-sliders"></i> Mixer
+                    </button>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-clock text-yellow-500"></i> Durasi Output</h2>
-                    <div class="flex flex-col gap-2 text-sm">
-                        <label class="flex items-center gap-2"><input type="radio" name="durationMode" value="video" checked class="accent-indigo-500"> Ikuti Durasi Video</label>
-                        <label class="flex items-center gap-2"><input type="radio" name="durationMode" value="audio" class="accent-indigo-500"> Ikuti Durasi Audio (Loop Video)</label>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm ring-1 ring-indigo-500/20">
-                    <h2 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-sliders text-green-500"></i> Audio Mixer</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <div class="flex justify-between text-xs mb-2 font-semibold">
-                                <span>Suara Asli Video</span>
-                                <span id="videoVolText" class="text-indigo-500">0%</span>
+                <div class="relative flex-grow">
+                    <!-- TAB 1: Panel Media Playlist -->
+                    <div id="tab-media" class="block animate-fade-in">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-[520px]">
+                            <h2 class="font-bold mb-4 flex items-center justify-between gap-2 text-lg">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-photo-film text-indigo-500"></i> Playlist Video</span>
+                                <span class="text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 px-2 py-1 rounded-full" id="playlistCount">0 Video</span>
+                            </h2>
+                            
+                            <!-- Container List Video -->
+                            <div id="playlistContainer" class="flex-grow overflow-y-auto custom-scroll space-y-3 mb-4 pr-1">
+                                <div id="emptyPlaylistMsg" class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-sm text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                                    <i class="fa-solid fa-film text-3xl mb-2"></i>
+                                    <p>Belum ada video.<br>Klik tombol di bawah untuk menambah video.</p>
+                                </div>
+                                <!-- Item Video akan dirender di sini oleh JS -->
                             </div>
-                            <input type="range" id="videoVolume" min="0" max="2" step="0.1" value="0" class="w-full">
+
+                            <div class="space-y-3 shrink-0">
+                                <button id="addVideoBtn" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors border border-slate-300 dark:border-slate-600">
+                                    <i class="fa-solid fa-plus text-indigo-500"></i> Tambah Video (MP4)
+                                </button>
+                                <input type="file" id="videoInput" accept="video/*" multiple class="hidden">
+                                
+                                <div class="h-px w-full bg-slate-200 dark:bg-slate-700 my-2"></div>
+
+                                <label class="block w-full p-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 text-center transition-colors bg-slate-50 dark:bg-slate-800/50">
+                                    <i class="fa-solid fa-music text-lg text-slate-400 mb-1 block"></i>
+                                    <span class="text-sm text-slate-600 dark:text-slate-300 font-medium" id="audioFileName">Pilih Musik Latar (MP3)</span>
+                                    <input type="file" id="audioInput" accept="audio/*" class="hidden">
+                                </label>
+                            </div>
                         </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-2 font-semibold">
-                                <span>Musik Latar</span>
-                                <span id="musicVolText" class="text-indigo-500">100%</span>
+                    </div>
+
+                    <!-- TAB 2: Panel Mixer -->
+                    <div id="tab-mixer" class="hidden animate-fade-in">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-[520px] overflow-y-auto custom-scroll">
+                            <div class="mb-6">
+                                <h2 class="font-bold mb-3 flex items-center gap-2 text-lg"><i class="fa-solid fa-clock text-yellow-500"></i> Durasi Output</h2>
+                                <div class="flex flex-col gap-2 text-sm">
+                                    <label class="flex items-center gap-3 p-2 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                        <input type="radio" name="durationMode" value="video" checked class="accent-indigo-500 w-4 h-4"> 
+                                        <span class="font-medium">Ikuti Total Durasi Playlist Video</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-2 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                        <input type="radio" name="durationMode" value="audio" class="accent-indigo-500 w-4 h-4"> 
+                                        <span class="font-medium">Ikuti Durasi Audio (Loop Playlist)</span>
+                                    </label>
+                                </div>
                             </div>
-                            <input type="range" id="musicVolume" min="0" max="2" step="0.1" value="1" class="w-full">
+
+                            <div class="h-px w-full bg-slate-200 dark:bg-slate-700 mb-6"></div>
+
+                            <h2 class="font-bold mb-4 flex items-center gap-2 text-lg"><i class="fa-solid fa-sliders text-green-500"></i> Audio Mixer</h2>
+                            <div class="space-y-4">
+                                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700">
+                                    <div class="flex justify-between text-sm mb-3 font-semibold">
+                                        <span class="flex items-center gap-2"><i class="fa-solid fa-video text-slate-400"></i> Suara Asli Video</span>
+                                        <span id="videoVolText" class="text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded">0%</span>
+                                    </div>
+                                    <input type="range" id="videoVolume" min="0" max="2" step="0.1" value="0" class="w-full">
+                                </div>
+                                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700">
+                                    <div class="flex justify-between text-sm mb-3 font-semibold">
+                                        <span class="flex items-center gap-2"><i class="fa-solid fa-music text-slate-400"></i> Musik Latar</span>
+                                        <span id="musicVolText" class="text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded">100%</span>
+                                    </div>
+                                    <input type="range" id="musicVolume" min="0" max="2" step="0.1" value="1" class="w-full">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-black rounded-xl overflow-hidden relative shadow-lg aspect-video border border-slate-700">
+                <!-- Area Preview Canvas -->
+                <div class="bg-black rounded-xl overflow-hidden relative shadow-lg aspect-video border border-slate-700 ring-2 ring-black/5">
                     <canvas id="previewCanvas" class="w-full h-full object-contain"></canvas>
                     
-                    <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 pointer-events-none">
-                        <i class="fa-solid fa-film text-4xl mb-2 opacity-50"></i>
-                        <p>Preview Area</p>
+                    <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 pointer-events-none bg-slate-900/50 backdrop-blur-sm transition-opacity">
+                        <i class="fa-solid fa-film text-5xl mb-3 opacity-60"></i>
+                        <p class="font-medium text-lg">Area Preview Video</p>
+                        <p class="text-sm opacity-70 mt-1">Masukkan video untuk memulai</p>
                     </div>
                     
-                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-black/90 z-20 flex flex-col items-center justify-center text-white">
-                        <div class="loader mb-4"></div>
-                        <p class="font-bold animate-pulse">Merender ke MP4...</p>
-                        <p id="progressText" class="text-sm opacity-70 mt-2">0%</p>
+                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-slate-900/95 z-20 flex flex-col items-center justify-center text-white backdrop-blur-md">
+                        <div class="loader mb-4 border-indigo-400 border-t-indigo-600 w-12 h-12 border-4"></div>
+                        <p class="font-bold text-xl animate-pulse text-indigo-100">Menyambung & Merender MP4...</p>
+                        <p id="progressText" class="text-3xl font-black mt-3 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">0%</p>
+                        <p class="text-sm text-slate-400 mt-4"><i class="fa-solid fa-circle-info"></i> Mohon jangan tutup halaman ini</p>
                     </div>
 
-                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4 bg-slate-900/80 backdrop-blur px-6 py-2 rounded-full border border-slate-700">
-                        <button id="playBtn" class="text-white hover:text-indigo-400 disabled:opacity-30" disabled><i class="fa-solid fa-play text-xl"></i></button>
-                        <button id="stopBtn" class="text-white hover:text-red-400 disabled:opacity-30" disabled><i class="fa-solid fa-stop text-xl"></i></button>
-                        <span id="timeDisplay" class="text-xs font-mono text-slate-300 flex items-center border-l border-slate-600 pl-4 ml-2">00:00</span>
+                    <!-- Kontrol Player -->
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4 bg-slate-900/80 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-700/50 shadow-xl items-center">
+                        <button id="playBtn" class="text-white hover:text-indigo-400 disabled:opacity-30 disabled:hover:text-white transition-colors outline-none" disabled>
+                            <i class="fa-solid fa-play text-2xl"></i>
+                        </button>
+                        <button id="stopBtn" class="text-white hover:text-red-400 disabled:opacity-30 disabled:hover:text-white transition-colors outline-none" disabled>
+                            <i class="fa-solid fa-stop text-2xl"></i>
+                        </button>
+                        <div class="h-6 w-px bg-slate-600 mx-2"></div>
+                        <span id="timeDisplay" class="text-sm font-mono text-slate-200 font-semibold tracking-wider">00:00 / 00:00</span>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center shadow-md">
-                    <div>
-                        <h3 class="font-bold text-lg">Ekspor MP4</h3>
-                        <p class="text-sm text-slate-500">Support WA, IG, TikTok, FB</p>
+                <!-- Area Ekspor -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-center shadow-md gap-4">
+                    <div class="text-center sm:text-left">
+                        <h3 class="font-bold text-xl mb-1 text-slate-800 dark:text-white">Ekspor Proyek</h3>
+                        <p class="text-sm text-slate-500 font-medium"><i class="fa-brands fa-whatsapp text-green-500"></i> <i class="fa-brands fa-instagram text-pink-500 mx-1"></i> <i class="fa-brands fa-tiktok text-slate-800 dark:text-white"></i> Gabung & Render MP4</p>
                     </div>
-                    <div class="flex gap-3">
-                        <button id="exportBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition" disabled>
-                            <i class="fa-solid fa-file-video"></i> Render MP4
+                    <div class="flex gap-3 w-full sm:w-auto">
+                        <button id="exportBtn" class="flex-1 sm:flex-none bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-bold py-3.5 px-8 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/30" disabled>
+                            <i class="fa-solid fa-file-video text-lg"></i> Mulai Render MP4
                         </button>
-                        <a id="downloadLink" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 animate-bounce">
-                            <i class="fa-solid fa-download"></i> Download MP4
+                        <a id="downloadLink" class="hidden flex-1 sm:flex-none bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white font-bold py-3.5 px-8 rounded-xl flex items-center justify-center gap-2 animate-bounce shadow-lg shadow-green-500/30">
+                            <i class="fa-solid fa-download text-lg"></i> Simpan Video
                         </a>
                     </div>
                 </div>
@@ -138,14 +215,15 @@
         </div>
     </main>
 
-    <video id="sourceVideo" class="hidden" playsinline crossorigin="anonymous"></video>
     <audio id="sourceAudio" class="hidden" crossorigin="anonymous"></audio>
 
     <script>
-        // --- CORE ---
-        const videoInput = document.getElementById('videoInput');
+        // --- CORE & STATE ---
+        const playlist = []; // Array of video objects: {id, file, url, element, startTrim, endTrim, duration, audioNode}
+        let currentPlaylistIndex = 0;
+        
         const audioInput = document.getElementById('audioInput');
-        const sourceVideo = document.getElementById('sourceVideo');
+        const videoInput = document.getElementById('videoInput');
         const sourceAudio = document.getElementById('sourceAudio');
         const canvas = document.getElementById('previewCanvas');
         const ctx = canvas.getContext('2d', { alpha: false });
@@ -159,20 +237,204 @@
         const downloadLink = document.getElementById('downloadLink');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const progressText = document.getElementById('progressText');
+        const playlistContainer = document.getElementById('playlistContainer');
 
-        // --- STATE ---
         let audioCtx, destNode, gainVideo, gainAudio, compressor;
-        let sourceVideoNode, sourceAudioNode;
+        let sourceAudioNode;
         let isPlaying = false;
         let isRecording = false;
         let mediaRecorder;
         let recordedChunks = [];
         let renderInterval;
-        let startTime = 0;
+        let startTimeGlobal = 0;
         let targetDuration = 0;
         let selectedMimeType = '';
 
-        // --- 1. AUDIO ENGINE (FIXED V2) ---
+        // --- LOGO IMAGE ---
+        const logoImg = new Image();
+        logoImg.src = 'AgungProAudio_Logo.png'; 
+
+        // --- TAB NAVIGATION SYSTEM ---
+        window.switchTab = function(tabId) {
+            // Sembunyikan semua tab
+            ['media', 'mixer'].forEach(id => {
+                document.getElementById('tab-' + id).classList.add('hidden');
+                document.getElementById('tab-' + id).classList.remove('block');
+                
+                // Reset styling tombol
+                const btn = document.getElementById('btn-' + id);
+                btn.classList.remove('bg-indigo-50', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-indigo-400', 'shadow-sm');
+                btn.classList.add('text-slate-500', 'hover:text-slate-700', 'hover:bg-slate-50', 'dark:text-slate-400', 'dark:hover:text-slate-200', 'dark:hover:bg-slate-700/50');
+            });
+
+            // Tampilkan tab yang dipilih
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('block');
+            
+            // Highlight tombol aktif
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700', 'hover:bg-slate-50', 'dark:text-slate-400', 'dark:hover:text-slate-200', 'dark:hover:bg-slate-700/50');
+            activeBtn.classList.add('bg-indigo-50', 'dark:bg-slate-700', 'text-indigo-600', 'dark:text-indigo-400', 'shadow-sm');
+        };
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        // --- 1. PLAYLIST MANAGEMENT ---
+        document.getElementById('addVideoBtn').addEventListener('click', () => videoInput.click());
+
+        videoInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            for (let file of files) {
+                await addVideoToPlaylist(file);
+            }
+            videoInput.value = ''; // Reset input
+        });
+
+        async function addVideoToPlaylist(file) {
+            const id = 'vid_' + Date.now() + Math.floor(Math.random() * 1000);
+            const url = URL.createObjectURL(file);
+            const videoEl = document.createElement('video');
+            videoEl.src = url;
+            videoEl.crossOrigin = "anonymous";
+            videoEl.playsInline = true;
+            
+            await new Promise((resolve) => {
+                videoEl.onloadedmetadata = () => resolve();
+            });
+
+            const duration = videoEl.duration;
+            const vidObj = {
+                id: id,
+                name: file.name,
+                file: file,
+                url: url,
+                element: videoEl,
+                startTrim: 0,
+                endTrim: duration,
+                duration: duration,
+                audioNode: null
+            };
+
+            playlist.push(vidObj);
+            renderPlaylistUI();
+            
+            // Setup canvas size from first video
+            if (playlist.length === 1) {
+                canvas.width = videoEl.videoWidth;
+                canvas.height = videoEl.videoHeight;
+                document.getElementById('placeholder').style.opacity = '0';
+                setTimeout(() => document.getElementById('placeholder').style.display = 'none', 300);
+                playBtn.disabled = false;
+                exportBtn.disabled = false;
+                videoEl.currentTime = 0;
+                setTimeout(() => drawFrame(videoEl), 200); 
+            }
+        }
+
+        function renderPlaylistUI() {
+            document.getElementById('playlistCount').innerText = `${playlist.length} Video`;
+            const emptyMsg = document.getElementById('emptyPlaylistMsg');
+            
+            if (playlist.length === 0) {
+                emptyMsg.style.display = 'flex';
+                playlistContainer.innerHTML = '';
+                playlistContainer.appendChild(emptyMsg);
+                playBtn.disabled = true;
+                exportBtn.disabled = true;
+                return;
+            } else {
+                emptyMsg.style.display = 'none';
+            }
+
+            // Keep empty msg in DOM but hidden
+            let html = '';
+            playlist.forEach((vid, index) => {
+                html += `
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 shadow-sm relative group">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2 overflow-hidden pr-6">
+                            <span class="bg-indigo-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full shrink-0">${index + 1}</span>
+                            <span class="text-sm font-semibold truncate" title="${vid.name}">${vid.name}</span>
+                        </div>
+                        <button onclick="removeVideo('${vid.id}')" class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex gap-3 bg-white dark:bg-slate-800 p-2 rounded border border-slate-100 dark:border-slate-600">
+                        <div class="flex-1">
+                            <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Mulai (Detik)</label>
+                            <input type="number" step="0.1" min="0" max="${vid.duration}" value="${vid.startTrim.toFixed(1)}" 
+                                onchange="updateTrim('${vid.id}', 'start', this.value)"
+                                class="w-full bg-slate-100 dark:bg-slate-700 text-sm p-1 rounded border border-transparent focus:border-indigo-500 outline-none text-center font-mono">
+                        </div>
+                        <div class="flex-1">
+                            <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Selesai (Detik)</label>
+                            <input type="number" step="0.1" min="0" max="${vid.duration}" value="${vid.endTrim.toFixed(1)}" 
+                                onchange="updateTrim('${vid.id}', 'end', this.value)"
+                                class="w-full bg-slate-100 dark:bg-slate-700 text-sm p-1 rounded border border-transparent focus:border-indigo-500 outline-none text-center font-mono">
+                        </div>
+                    </div>
+                    <div class="text-right text-[10px] text-slate-500 mt-1 font-mono">
+                        Durasi asli: ${vid.duration.toFixed(1)}s
+                    </div>
+                </div>
+                `;
+            });
+            
+            playlistContainer.innerHTML = html;
+            playlistContainer.appendChild(emptyMsg); // re-append hidden msg
+        }
+
+        window.updateTrim = function(id, type, val) {
+            const vid = playlist.find(v => v.id === id);
+            if (!vid) return;
+            let num = parseFloat(val);
+            if (isNaN(num) || num < 0) num = 0;
+            if (num > vid.duration) num = vid.duration;
+
+            if (type === 'start') {
+                if (num >= vid.endTrim) num = Math.max(0, vid.endTrim - 1);
+                vid.startTrim = num;
+            } else {
+                if (num <= vid.startTrim) num = Math.min(vid.duration, vid.startTrim + 1);
+                vid.endTrim = num;
+            }
+            renderPlaylistUI();
+        };
+
+        window.removeVideo = function(id) {
+            const index = playlist.findIndex(v => v.id === id);
+            if (index > -1) {
+                // Hapus URL objek untuk membebaskan memori
+                URL.revokeObjectURL(playlist[index].url);
+                playlist.splice(index, 1);
+                renderPlaylistUI();
+                
+                if (playlist.length === 0) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    document.getElementById('placeholder').style.display = 'flex';
+                    setTimeout(() => document.getElementById('placeholder').style.opacity = '1', 10);
+                }
+            }
+        };
+
+        // --- 2. AUDIO INPUT ---
+        audioInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('audioFileName').innerHTML = `<span class="text-indigo-500 font-bold"><i class="fa-solid fa-check-circle"></i> ${file.name}</span>`;
+                sourceAudio.src = URL.createObjectURL(file);
+            }
+        });
+
+        // --- 3. AUDIO ENGINE ---
         function initAudioEngine() {
             if (!audioCtx) {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -200,6 +462,20 @@
                 gainAudio.gain.value = parseFloat(musicVolSlider.value);
                 gainAudio.connect(compressor);
             }
+
+            // Hubungkan semua video di playlist ke gainVideo
+            playlist.forEach(vid => {
+                if (!vid.audioNode) {
+                    vid.audioNode = audioCtx.createMediaElementSource(vid.element);
+                    vid.audioNode.connect(gainVideo);
+                }
+            });
+
+            // Hubungkan audio latar
+            if (sourceAudio.src && !sourceAudioNode) {
+                sourceAudioNode = audioCtx.createMediaElementSource(sourceAudio);
+                sourceAudioNode.connect(gainAudio);
+            }
         }
 
         function updateVolumes() {
@@ -217,61 +493,67 @@
         musicVolSlider.addEventListener('input', updateVolumes);
         updateVolumes();
 
-        // --- 2. FILE HANDLING ---
-        videoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('videoFileName').innerText = file.name;
-                sourceVideo.src = URL.createObjectURL(file);
-                sourceVideo.onloadedmetadata = () => {
-                    canvas.width = sourceVideo.videoWidth;
-                    canvas.height = sourceVideo.videoHeight;
-                    document.getElementById('placeholder').style.display = 'none';
-                    playBtn.disabled = false;
-                    exportBtn.disabled = false;
-                    sourceVideo.currentTime = 0;
-                    setTimeout(() => ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height), 200);
-                };
-            }
-        });
-
-        audioInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('audioFileName').innerText = file.name;
-                sourceAudio.src = URL.createObjectURL(file);
-            }
-        });
-
-        // --- 3. LOGIC ---
+        // --- 4. RENDERER & LOGIC ---
         playBtn.addEventListener('click', () => {
             if (isPlaying) stopAll(); else startProcess(false);
         });
         stopBtn.addEventListener('click', stopAll);
         exportBtn.addEventListener('click', () => startProcess(true));
 
+        function calculateTargetDuration() {
+            const mode = document.querySelector('input[name="durationMode"]:checked').value;
+            if (mode === 'audio' && sourceAudio.src) {
+                return sourceAudio.duration;
+            } else {
+                return playlist.reduce((sum, vid) => sum + (vid.endTrim - vid.startTrim), 0);
+            }
+        }
+
+        function drawFrame(videoEl) {
+            if (!videoEl || playlist.length === 0) return;
+            
+            // Gambar Background Hitam
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Gambar Video secara proporsional di tengah canvas (Mencegah distorsi beda resolusi)
+            const canvasAspect = canvas.width / canvas.height;
+            const videoAspect = videoEl.videoWidth / videoEl.videoHeight;
+            let drawWidth, drawHeight, startX, startY;
+
+            if (videoAspect > canvasAspect) {
+                drawWidth = canvas.width;
+                drawHeight = canvas.width / videoAspect;
+                startX = 0;
+                startY = (canvas.height - drawHeight) / 2;
+            } else {
+                drawHeight = canvas.height;
+                drawWidth = canvas.height * videoAspect;
+                startX = (canvas.width - drawWidth) / 2;
+                startY = 0;
+            }
+            
+            ctx.drawImage(videoEl, startX, startY, drawWidth, drawHeight);
+        }
+
         function startProcess(recording) {
+            if (playlist.length === 0) return;
             initAudioEngine();
 
-            if (!sourceVideoNode) {
-                sourceVideoNode = audioCtx.createMediaElementSource(sourceVideo);
-                sourceVideoNode.connect(gainVideo);
-            }
-            if (sourceAudio.src && !sourceAudioNode) {
-                sourceAudioNode = audioCtx.createMediaElementSource(sourceAudio);
-                sourceAudioNode.connect(gainAudio);
-            }
-
-            const mode = document.querySelector('input[name="durationMode"]:checked').value;
-            if (mode === 'audio' && sourceAudio.src) targetDuration = sourceAudio.duration;
-            else targetDuration = sourceVideo.duration;
-
-            sourceVideo.currentTime = 0;
+            targetDuration = calculateTargetDuration();
+            
+            // Reset Semua State Video
+            playlist.forEach(vid => {
+                vid.element.pause();
+                vid.element.currentTime = vid.startTrim;
+            });
             if (sourceAudio.src) sourceAudio.currentTime = 0;
             
+            currentPlaylistIndex = 0;
             isPlaying = true;
             isRecording = recording;
-            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            
+            playBtn.innerHTML = '<i class="fa-solid fa-pause text-2xl"></i>';
             stopBtn.disabled = false;
             
             if (recording) {
@@ -281,12 +563,14 @@
                 setupRecorder();
             }
 
-            sourceVideo.play();
+            // Play Video Pertama & Audio Latar
+            playlist[0].element.play().catch(e => console.error("Autoplay prevent:", e));
             if (sourceAudio.src) sourceAudio.play();
-            startTime = Date.now();
+            
+            startTimeGlobal = Date.now();
 
             if (renderInterval) clearInterval(renderInterval);
-            renderInterval = setInterval(loop, 1000 / 30);
+            renderInterval = setInterval(loop, 1000 / 30); // 30 FPS Loop
         }
 
         function stopAll() {
@@ -294,10 +578,10 @@
             isRecording = false;
             clearInterval(renderInterval);
             
-            sourceVideo.pause();
+            playlist.forEach(vid => vid.element.pause());
             if (sourceAudio.src) sourceAudio.pause();
 
-            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playBtn.innerHTML = '<i class="fa-solid fa-play text-2xl"></i>';
             stopBtn.disabled = true;
             loadingOverlay.classList.add('hidden');
             
@@ -307,29 +591,57 @@
         }
 
         function loop() {
-            ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height);
+            if (playlist.length === 0 || currentPlaylistIndex >= playlist.length) return;
 
-            const elapsed = (Date.now() - startTime) / 1000;
+            let activeVidObj = playlist[currentPlaylistIndex];
+            let activeVid = activeVidObj.element;
+
+            drawFrame(activeVid);
+
+            const elapsedGlobal = (Date.now() - startTimeGlobal) / 1000;
+            
             document.getElementById('timeDisplay').innerText = 
-                `${Math.floor(elapsed)}s / ${Math.floor(targetDuration)}s`;
+                `${formatTime(elapsedGlobal)} / ${formatTime(targetDuration)}`;
 
-            if (sourceVideo.ended && elapsed < targetDuration - 0.5) {
-                sourceVideo.currentTime = 0;
-                sourceVideo.play();
+            // --- TRANSISI PLAYLIST LOGIC ---
+            // Cek apakah video saat ini sudah mencapai batas "endTrim" nya
+            if (activeVid.currentTime >= activeVidObj.endTrim || activeVid.ended) {
+                activeVid.pause(); // Hentikan video saat ini
+                currentPlaylistIndex++; // Lanjut ke video berikutnya
+                
+                if (currentPlaylistIndex < playlist.length) {
+                    // Play video berikutnya
+                    let nextVidObj = playlist[currentPlaylistIndex];
+                    nextVidObj.element.currentTime = nextVidObj.startTrim;
+                    nextVidObj.element.play().catch(e => console.error("Play error:", e));
+                } else {
+                    // Playlist Habis. Cek durasi mode.
+                    const mode = document.querySelector('input[name="durationMode"]:checked').value;
+                    if (mode === 'audio' && elapsedGlobal < targetDuration - 0.5) {
+                        // Jika mode audio, loop seluruh playlist dari awal
+                        currentPlaylistIndex = 0;
+                        playlist.forEach(vid => vid.element.pause());
+                        let firstVid = playlist[0];
+                        firstVid.element.currentTime = firstVid.startTrim;
+                        firstVid.element.play();
+                    }
+                }
             }
 
+            // Update Progress UI jika merekam
             if (isRecording) {
-                const percent = Math.min(100, Math.round((elapsed / targetDuration) * 100));
+                const percent = Math.min(100, Math.round((elapsedGlobal / targetDuration) * 100));
                 progressText.innerText = `${percent}%`;
             }
 
-            if (elapsed >= targetDuration) {
+            // Selesai jika total waktu telah terlampaui
+            if (elapsedGlobal >= targetDuration) {
                 if (isRecording) finishRecording();
                 else stopAll();
             }
         }
 
-        // --- 4. MP4 & EXPORT LOGIC ---
+        // --- 5. MP4 & EXPORT LOGIC ---
         function setupRecorder() {
             const videoStream = canvas.captureStream(30);
             const audioStream = destNode.stream;
@@ -338,23 +650,19 @@
                 ...audioStream.getAudioTracks()
             ]);
 
-            // LIST TIPE VIDEO YANG DIDUKUNG (Prioritas MP4 H.264)
             const possibleTypes = [
-                "video/mp4;codecs=avc1.42E01E,mp4a.40.2", // Standard MP4 (Best for IG/WA)
-                "video/mp4",                              // Generic MP4
-                "video/webm;codecs=h264",                 // WebM with H264
-                "video/webm;codecs=vp9",                  // High Quality WebM
-                "video/webm"                              // Default
+                "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+                "video/mp4",
+                "video/webm;codecs=h264",
+                "video/webm;codecs=vp9",
+                "video/webm"
             ];
 
-            // Cek format mana yang disupport browser ini
             selectedMimeType = possibleTypes.find(type => MediaRecorder.isTypeSupported(type)) || "video/webm";
             
-            console.log("Using format:", selectedMimeType);
-
             const options = {
                 mimeType: selectedMimeType,
-                videoBitsPerSecond: 15000000 // 15 Mbps (High Quality but Safe)
+                videoBitsPerSecond: 15000000 // 15 Mbps
             };
 
             try {
@@ -381,14 +689,11 @@
                 
                 downloadLink.href = url;
                 
-                // Tentukan ekstensi file (.mp4 atau .webm)
-                // HACK: Jika browser hanya support WebM, kita tetap bisa namakan .mp4 
-                // (sebagian sosmed terima, tapi idealnya pakai format mp4 asli jika disupport browser)
                 const isMp4 = selectedMimeType.includes("mp4");
-                const ext = isMp4 ? "mp4" : "mp4"; // Paksa .mp4 agar user senang (Modern browsers usually handle container swap)
+                const ext = isMp4 ? "mp4" : "mp4"; // Defaulting to .mp4 extension
                 
-                downloadLink.download = `AgungVideo_${Date.now()}.${ext}`;
-                downloadLink.innerHTML = `<i class="fa-solid fa-download"></i> Download ${ext.toUpperCase()}`;
+                downloadLink.download = `AgungProAudio_PlaylistMix_${Date.now()}.${ext}`;
+                downloadLink.innerHTML = `<i class="fa-solid fa-download text-lg"></i> Simpan Video Gabungan`;
                 downloadLink.classList.remove('hidden');
                 
                 stopAll();
