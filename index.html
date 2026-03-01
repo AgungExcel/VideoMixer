@@ -92,7 +92,7 @@
                 <div class="relative flex-grow">
                     <!-- TAB 1: Panel Media Playlist (Gabung Video) -->
                     <div id="tab-media" class="block animate-fade-in">
-                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-[520px]">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-[600px]">
                             <h2 class="font-bold mb-4 flex items-center justify-between gap-2 text-lg">
                                 <span class="flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> Gabung Video</span>
                                 <span class="text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 px-2 py-1 rounded-full" id="playlistCount">0 Video</span>
@@ -134,13 +134,34 @@
                                         </label>
                                     </div>
                                 </div>
+                                
+                                <div class="h-px w-full bg-slate-200 dark:bg-slate-700 my-1"></div>
+
+                                <!-- Volume Mixer khusus MEDIA -->
+                                <h3 class="font-bold text-sm text-slate-700 dark:text-slate-300 flex items-center gap-2"><i class="fa-solid fa-sliders text-green-500"></i> Volume Media</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700">
+                                        <div class="flex justify-between text-[10px] mb-1.5 font-bold uppercase tracking-wide">
+                                            <span class="text-slate-500"><i class="fa-solid fa-video"></i> Video Asli</span>
+                                            <span id="mediaVideoVolText" class="text-indigo-500">100%</span>
+                                        </div>
+                                        <input type="range" id="mediaVideoVolume" min="0" max="2" step="0.1" value="1" class="w-full">
+                                    </div>
+                                    <div class="bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-700">
+                                        <div class="flex justify-between text-[10px] mb-1.5 font-bold uppercase tracking-wide">
+                                            <span class="text-slate-500"><i class="fa-solid fa-music"></i> Musik Latar</span>
+                                            <span id="mediaAudioVolText" class="text-indigo-500">100%</span>
+                                        </div>
+                                        <input type="range" id="mediaAudioVolume" min="0" max="2" step="0.1" value="1" class="w-full">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- TAB 2: Panel Mixer (Ganti Audio 1 Video) -->
                     <div id="tab-mixer" class="hidden animate-fade-in">
-                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-[520px] flex flex-col">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-[600px] flex flex-col">
                             <h2 class="font-bold mb-4 flex items-center gap-2 text-lg"><i class="fa-solid fa-music text-indigo-500"></i> Ganti Audio (1 Video)</h2>
                             
                             <div class="space-y-4 flex-grow overflow-y-auto custom-scroll pr-1">
@@ -273,6 +294,8 @@
         const mediaVideoInput = document.getElementById('mediaVideoInput');
         const mediaAudioInput = document.getElementById('mediaAudioInput');
         const playlistContainer = document.getElementById('playlistContainer');
+        const mediaVideoVolSlider = document.getElementById('mediaVideoVolume');
+        const mediaAudioVolSlider = document.getElementById('mediaAudioVolume');
 
         const mixerVideoInput = document.getElementById('mixerVideoInput');
         const mixerAudioInput = document.getElementById('mixerAudioInput');
@@ -338,6 +361,9 @@
                 playBtn.disabled = true;
                 exportBtn.disabled = true;
             }
+
+            // Segera terapkan volume yang sesuai dengan mode tab
+            updateVolumes();
         };
 
         function formatTime(seconds) {
@@ -498,17 +524,30 @@
         });
 
         function updateVolumes() {
-            const vidVol = parseFloat(videoVolSlider.value);
-            const audVol = parseFloat(musicVolSlider.value);
-            document.getElementById('videoVolText').innerText = Math.round(vidVol * 100) + '%';
-            document.getElementById('musicVolText').innerText = Math.round(audVol * 100) + '%';
-            if (currentMode === 'mixer' && gainVideo && gainAudio) {
-                gainVideo.gain.value = vidVol;
-                gainAudio.gain.value = audVol;
+            if (currentMode === 'media') {
+                const vidVol = parseFloat(mediaVideoVolSlider.value);
+                const audVol = parseFloat(mediaAudioVolSlider.value);
+                document.getElementById('mediaVideoVolText').innerText = Math.round(vidVol * 100) + '%';
+                document.getElementById('mediaAudioVolText').innerText = Math.round(audVol * 100) + '%';
+                if (gainVideo && gainAudio) {
+                    gainVideo.gain.value = vidVol;
+                    gainAudio.gain.value = audVol;
+                }
+            } else {
+                const vidVol = parseFloat(videoVolSlider.value);
+                const audVol = parseFloat(musicVolSlider.value);
+                document.getElementById('videoVolText').innerText = Math.round(vidVol * 100) + '%';
+                document.getElementById('musicVolText').innerText = Math.round(audVol * 100) + '%';
+                if (gainVideo && gainAudio) {
+                    gainVideo.gain.value = vidVol;
+                    gainAudio.gain.value = audVol;
+                }
             }
         }
         videoVolSlider.addEventListener('input', updateVolumes);
         musicVolSlider.addEventListener('input', updateVolumes);
+        mediaVideoVolSlider.addEventListener('input', updateVolumes);
+        mediaAudioVolSlider.addEventListener('input', updateVolumes);
 
         // --- 3. AUDIO ENGINE ---
         function initAudioEngine() {
@@ -526,8 +565,8 @@
             if (!gainAudio) { gainAudio = audioCtx.createGain(); gainAudio.connect(compressor); }
 
             if (currentMode === 'media') {
-                gainVideo.gain.value = 1.0; // Fixed 100% untuk Media Tab
-                gainAudio.gain.value = 1.0; 
+                gainVideo.gain.value = parseFloat(mediaVideoVolSlider.value); // Mengambil dari slider Media
+                gainAudio.gain.value = parseFloat(mediaAudioVolSlider.value); 
 
                 playlist.forEach(vid => {
                     if (!vid.audioNode) {
